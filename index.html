@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Track · Entrenos</title>
+  <meta name="theme-color" content="#0f172a">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top">
+    <h1>Track</h1>
+    <p class="sub">Correr · Pesas · Sueño</p>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab active" data-tab="resumen" role="tab">Resumen</button>
+    <button class="tab" data-tab="correr" role="tab">Correr</button>
+    <button class="tab" data-tab="pesas" role="tab">Pesas</button>
+    <button class="tab" data-tab="sueno" role="tab">Sueño</button>
+  </nav>
+
+  <main>
+    <!-- RESUMEN -->
+    <section id="resumen" class="panel active">
+      <h2>Esta semana</h2>
+      <div class="stats" id="week-stats"></div>
+
+      <h2>Kilómetros · últimas 8 semanas</h2>
+      <div class="card"><div class="bars" id="km-chart"></div></div>
+
+      <h2>Récords</h2>
+      <div class="card" id="records"></div>
+
+      <h2>Actividad reciente</h2>
+      <ul class="list" id="recent"></ul>
+
+      <h2>Tus datos</h2>
+      <div class="card row-actions">
+        <button id="export-btn" class="secondary">Exportar JSON</button>
+        <label class="secondary file-btn">Importar JSON
+          <input type="file" id="import-file" accept="application/json" hidden>
+        </label>
+      </div>
+      <p class="hint">Los datos se guardan solo en este navegador. Exporta de vez en cuando para tener respaldo.</p>
+    </section>
+
+    <!-- CORRER -->
+    <section id="correr" class="panel">
+      <h2>Registrar carrera</h2>
+      <form id="run-form" class="card form">
+        <div class="grid2">
+          <label>Fecha<input type="date" name="date" required></label>
+          <label>Tipo
+            <select name="type">
+              <option>Fácil</option>
+              <option>Tempo</option>
+              <option>Intervalos</option>
+              <option>Largo</option>
+              <option>Carrera</option>
+              <option>Recuperación</option>
+            </select>
+          </label>
+        </div>
+        <div class="grid2">
+          <label>Distancia (km)<input type="number" name="distance" step="0.01" min="0.01" required inputmode="decimal"></label>
+          <label>Duración
+            <span class="dur">
+              <input type="number" name="h" min="0" placeholder="h" inputmode="numeric">
+              <input type="number" name="m" min="0" max="59" placeholder="min" inputmode="numeric">
+              <input type="number" name="s" min="0" max="59" placeholder="seg" inputmode="numeric">
+            </span>
+          </label>
+        </div>
+        <label>Esfuerzo percibido (1–10): <output id="rpe-out">5</output>
+          <input type="range" name="rpe" min="1" max="10" value="5">
+        </label>
+        <label>Notas<input type="text" name="notes" placeholder="Ruta, sensaciones, clima…"></label>
+        <p class="preview" id="pace-preview">Ritmo: —</p>
+        <button type="submit">Guardar carrera</button>
+      </form>
+
+      <h2>Historial</h2>
+      <ul class="list" id="run-list"></ul>
+    </section>
+
+    <!-- PESAS -->
+    <section id="pesas" class="panel">
+      <h2>Registrar sesión de pesas</h2>
+      <form id="lift-form" class="card form">
+        <div class="grid2">
+          <label>Fecha<input type="date" name="date" required></label>
+          <label>Sesión<input type="text" name="name" placeholder="Pierna, Torso, Full body…" list="session-names"></label>
+        </div>
+        <datalist id="session-names">
+          <option>Pierna</option><option>Torso</option><option>Empuje</option>
+          <option>Tirón</option><option>Full body</option>
+        </datalist>
+        <datalist id="exercise-names">
+          <option>Sentadilla</option><option>Peso muerto</option><option>Press banca</option>
+          <option>Press militar</option><option>Dominadas</option><option>Remo con barra</option>
+          <option>Hip thrust</option><option>Zancadas</option><option>Peso muerto rumano</option>
+          <option>Prensa</option><option>Fondos</option><option>Curl bíceps</option>
+          <option>Extensión tríceps</option><option>Elevación de gemelos</option>
+        </datalist>
+
+        <div class="ex-head"><span>Ejercicio</span><span>Series</span><span>Reps</span><span>Kg</span><span></span></div>
+        <div id="exercise-rows"></div>
+        <button type="button" id="add-ex" class="secondary">+ Añadir ejercicio</button>
+
+        <label>Notas<input type="text" name="notes" placeholder="Cómo te sentiste…"></label>
+        <p class="preview" id="vol-preview">Volumen: 0 kg</p>
+        <button type="submit">Guardar sesión</button>
+      </form>
+
+      <h2>Historial</h2>
+      <ul class="list" id="lift-list"></ul>
+    </section>
+
+    <!-- SUEÑO -->
+    <section id="sueno" class="panel">
+      <h2>¿A qué hora me duermo?</h2>
+      <form id="sleep-form" class="card form">
+        <div class="grid2">
+          <label>Hora del entreno<input type="time" name="trainTime" value="06:00" required></label>
+          <label>Tipo de entreno
+            <select name="trainType">
+              <option value="easy">Carrera suave</option>
+              <option value="hard">Carrera intensa (tempo / series)</option>
+              <option value="long">Tirada larga</option>
+              <option value="lift">Pesas</option>
+              <option value="rest">Descanso / movilidad</option>
+            </select>
+          </label>
+        </div>
+        <div class="grid2">
+          <label>Minutos desde que despiertas hasta empezar
+            <input type="number" name="prep" min="0" max="240" value="30" inputmode="numeric">
+          </label>
+          <label>Minutos que tardas en dormirte
+            <input type="number" name="latency" min="0" max="120" value="15" inputmode="numeric">
+          </label>
+        </div>
+        <label>Horas de sueño objetivo
+          <select name="target">
+            <option value="auto">Automático según el entreno</option>
+            <option value="7">7 h</option>
+            <option value="7.5">7 h 30 min</option>
+            <option value="8">8 h</option>
+            <option value="8.5">8 h 30 min</option>
+            <option value="9">9 h</option>
+          </select>
+        </label>
+        <p class="hint">La preparación incluye vestirte, café, algo ligero de comer y el trayecto.</p>
+      </form>
+
+      <div class="card result" id="sleep-result"></div>
+      <h2>Opciones por ciclos de sueño (90 min)</h2>
+      <ul class="list" id="sleep-options"></ul>
+      <p class="hint">Despertar al final de un ciclo ayuda a levantarte con menos pesadez. Para atletas se recomiendan 7–9 h; tras sesiones intensas o largas, apunta a la parte alta.</p>
+    </section>
+  </main>
+
+  <template id="exercise-row">
+    <div class="ex-row">
+      <input type="text" class="ex-name" placeholder="Ejercicio" list="exercise-names" required>
+      <input type="number" class="ex-sets" min="1" value="3" inputmode="numeric" required>
+      <input type="number" class="ex-reps" min="1" value="8" inputmode="numeric" required>
+      <input type="number" class="ex-kg" min="0" step="0.5" placeholder="0" inputmode="decimal">
+      <button type="button" class="icon remove-ex" aria-label="Quitar ejercicio">✕</button>
+    </div>
+  </template>
+
+  <div id="toast" class="toast" role="status"></div>
+  <script src="app.js"></script>
+</body>
+</html>
